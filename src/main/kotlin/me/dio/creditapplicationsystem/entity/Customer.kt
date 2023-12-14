@@ -3,7 +3,7 @@ package me.dio.creditapplicationsystem.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "Cliente")
+//@Table(name = "Cliente")
 data class Customer(
     @Column(nullable = false) var firtName: String = "",
     @Column(nullable = false) var lastName: String = "",
