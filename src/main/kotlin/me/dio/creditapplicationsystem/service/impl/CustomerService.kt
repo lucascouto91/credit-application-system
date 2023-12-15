@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(
-    privete val customerRepository: CustomerRepository
+    private val customerRepository: CustomerRepository
 ) : ICustomerService {
     override fun save(customer: Customer): Customer =
         this.customerRepository.save(customer)
