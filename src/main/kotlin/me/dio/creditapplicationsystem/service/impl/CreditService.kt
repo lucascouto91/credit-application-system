@@ -5,7 +5,6 @@ import me.dio.creditapplicationsystem.repository.CreditRepository
 import me.dio.creditapplicationsystem.service.ICreditService
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
 @Service
 class CreditService(
@@ -23,7 +22,13 @@ class CreditService(
         TODO("Not yet implemented")
     }
 
-    override fun findByCreditCode(creditCode: UUID): Credit {
-        TODO("Not yet implemented")
+    override fun findByCreditCode(customerId: Long, creditCode: UUID): Credit {
+        val credit: Credit = (this.creditRepository.findByCreditCode(creditCode)
+            ?: throw RuntimeException("Creditcode $creditCode not found"))
+        return if (credit.customer?.id == customerId) {
+            credit
+        } else {
+            throw RuntimeException("Contact admin")
+        }
     }
 }
