@@ -7,6 +7,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import me.dio.creditapplicationsystem.entity.Address
 import me.dio.creditapplicationsystem.entity.Customer
+import me.dio.creditapplicationsystem.exception.BusinessException
 import me.dio.creditapplicationsystem.repository.CustomerRepository
 import me.dio.creditapplicationsystem.service.impl.CustomerService
 import org.assertj.core.api.Assertions
@@ -22,6 +23,7 @@ import java.util.Random
 class CustomerServiceTest {
     @MockK
     lateinit var customerRepository: CustomerRepository
+
     @InjectMockKs
     lateinit var customerService: CustomerService
 
@@ -43,14 +45,28 @@ class CustomerServiceTest {
     fun `should find customer by id`() {
         //given
         val fakeId: Long = Random().nextLong()
-        val fakeCustomer: Customer = buildCustomer(id= fakeId)
-        every { customerRepository.findById(fakeId)} returns Optional.of(fakeCustomer)
+        val fakeCustomer: Customer = buildCustomer(id = fakeId)
+        every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
         //when
         val actual: Customer = customerService.findById(fakeId)
         //then
         Assertions.assertThat(actual).isExactlyInstanceOf(Customer::class.java)
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
+        verify(exactly = 1) { customerRepository.findById(fakeId) }
+
+    }
+
+    @Test
+    fun `should not find customer by invalid id and throw BusinessException`() {
+        //given
+        val fakeId: Long = Random().nextLong()
+        every { customerRepository.findById(fakeId) } returns Optional.empty()
+        //when
+        //then
+        Assertions.assertThatExceptionOfType(BusinessException::class.java)
+            .isThrownBy { customerService.findById(fakeId) }
+            .withMessage("Id $fakeId not found")
         verify(exactly = 1) { customerRepository.findById(fakeId) }
 
     }
