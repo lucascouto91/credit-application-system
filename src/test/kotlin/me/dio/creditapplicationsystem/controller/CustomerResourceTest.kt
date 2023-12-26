@@ -49,9 +49,11 @@ class CustomerResourceTest {
         val valueAsString: String = objectMapper.writeValueAsString(customerDto)
         //when
         //then
-        mockMvc.perform(MockMvcRequestBuilders.post(URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(valueAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders.post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Cami"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
@@ -59,8 +61,37 @@ class CustomerResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("12345"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
             .andDo(MockMvcResultHandlers.print())
 
+    }
+
+    @Test
+    fun `should not save a customer with same CPF and return 409 status`() {
+        //given
+        customerRepository.save(buildCustomerDto().toEntity())
+        val customerDto: CustomerDto = buildCustomerDto()
+        val valueAsString: String = objectMapper.writeValueAsString(customerDto)
+        //when
+        //then
+        mockMvc.perform(
+            MockMvcRequestBuilders.post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
+            .andExpect(MockMvcResultMatchers.status().isConflict)
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.title")
+                    .value("Conflict! Consult the documentation ")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(409))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value("class org.springframework.dao.DataIntegrityViolationException")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
     }
 
 
