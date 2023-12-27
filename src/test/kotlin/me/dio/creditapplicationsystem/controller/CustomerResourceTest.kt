@@ -2,6 +2,7 @@ package me.dio.creditapplicationsystem.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import me.dio.creditapplicationsystem.dto.CustomerDto
+import me.dio.creditapplicationsystem.entity.Customer
 import me.dio.creditapplicationsystem.repository.CustomerRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -119,6 +120,28 @@ class CustomerResourceTest {
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should find customer by id and return 200 status`() {
+        //given
+        val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
+        //when
+        //then
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("$URL/${customer.id}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Cami"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("28475934625"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("12345"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+            .andDo(MockMvcResultHandlers.print())
+
     }
 
     private fun buildCustomerDto(
