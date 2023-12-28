@@ -1,6 +1,7 @@
 package me.dio.credit.application.system.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import me.dio.credit.application.system.entity.Customer
 import me.dio.credit.application.system.repository.CustomerRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
+import java.util.Random
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -41,6 +44,7 @@ class CustomerResourceTest {
     @AfterEach
     fun tearDown() = customerRepository.deleteAll()
 
+    //@DirtiesContext //Isso informará ao Spring para recriar o contexto do aplicativo DEPOIS dessa função específica.
     @Test
     fun `should create a customer and return 201 status`() {
         //given
@@ -120,11 +124,11 @@ class CustomerResourceTest {
             .andDo(MockMvcResultHandlers.print())
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)//Isso informará ao Spring para recriar o contexto do aplicativo ANTES dessa função específica.
     @Test
     fun `should find customer by id and return 200 status`() {
         //given
-        setup()
-        val customer: me.dio.credit.application.system.entity.Customer = customerRepository.save(buildCustomerDto().toEntity())
+        val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
         //when
         //then
         mockMvc.perform(
@@ -166,6 +170,47 @@ class CustomerResourceTest {
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should delete customer by id and return 204 status`() {
+        //given
+        val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
+        //when
+        //then
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${customer.id}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+            .andDo {MockMvcResultHandlers.print()}
+
+    }
+
+    @Test
+    fun `should not delete customer by id and return 400 status`() {
+        //given
+        val invalidId: Long = Random().nextLong()
+        //when
+        //then
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${invalidId}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.title")
+                    .value("Bad Request! Consult the documentation ")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value("class me.dio.credit.application.system.exception.BusinessException")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+
     }
 
     private fun buildCustomerDto(
