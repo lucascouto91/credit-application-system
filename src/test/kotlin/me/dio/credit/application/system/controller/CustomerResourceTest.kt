@@ -1,6 +1,8 @@
 package me.dio.credit.application.system.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import me.dio.credit.application.system.dto.CustomerDto
+import me.dio.credit.application.system.dto.CustomerUpdateDto
 import me.dio.credit.application.system.entity.Customer
 import me.dio.credit.application.system.repository.CustomerRepository
 import org.junit.jupiter.api.AfterEach
@@ -62,6 +64,7 @@ class CustomerResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("28475934625"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("1000.0"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("12345"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -140,6 +143,7 @@ class CustomerResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("28475934625"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("1000.0"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("12345"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua da Cami"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -213,6 +217,31 @@ class CustomerResourceTest {
 
     }
 
+    @Test
+    fun `should update a customer and return 200`() {
+        //given
+        val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
+        val customerUpdateDto: CustomerUpdateDto = buildCustomerUpdateDto()
+        val valueAsString: String = objectMapper.writeValueAsString(customerUpdateDto)
+        //when
+        //then
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("$URL?customerId=${customer.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("CamiUpdate"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("CavalcanteUpdate"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("28475934625"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("camila@email.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("5000.0"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("456123"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua Updated"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
     private fun buildCustomerDto(
         firstName: String = "Cami",
         lastName: String = "Cavalcante",
@@ -232,6 +261,20 @@ class CustomerResourceTest {
         zipCode = zipCode,
         street = street
 
+    )
+
+    private fun buildCustomerUpdateDto(
+        firstName: String = "CamiUpdate",
+        lastName: String = "CavalcanteUpdate",
+        income: BigDecimal = BigDecimal.valueOf(5000.0),
+        zipCode: String = "456123",
+        street: String = "Rua Updated"
+    ): CustomerUpdateDto = CustomerUpdateDto(
+        firstName = firstName,
+        lastName = lastName,
+        income = income,
+        zipCode = zipCode,
+        street = street
     )
 
 
