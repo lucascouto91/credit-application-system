@@ -217,6 +217,7 @@ class CustomerResourceTest {
 
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)//Isso informará ao Spring para recriar o contexto do aplicativo ANTES dessa função específica.
     @Test
     fun `should update a customer and return 200 status`() {
         //given
