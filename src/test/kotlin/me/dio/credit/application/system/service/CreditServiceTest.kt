@@ -1,16 +1,15 @@
 package me.dio.credit.application.system.service
 
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import me.dio.credit.application.system.entity.Credit
-import me.dio.credit.application.system.entity.Customer
-import me.dio.credit.application.system.exception.BusinessException
-import me.dio.creditapplicationsystem.repository.CreditRepository
-import me.dio.creditapplicationsystem.service.CustomerServiceTest
-import me.dio.creditapplicationsystem.service.impl.CreditService
-import me.dio.creditapplicationsystem.service.impl.CustomerService
+import io.mockk.unmockkAll
+import io.mockk.verify
+import me.dio.credit.application.system.repository.CreditRepository
+import me.dio.credit.application.system.service.impl.CreditService
+import me.dio.credit.application.system.service.impl.CustomerService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

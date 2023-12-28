@@ -42,7 +42,7 @@ class CustomerResourceTest {
     fun tearDown() = customerRepository.deleteAll()
 
     @Test
-    fun `shloud create a customer and return 201 status`() {
+    fun `should create a customer and return 201 status`() {
         //given
         val customerDto: me.dio.credit.application.system.dto.CustomerDto = buildCustomerDto()
         val valueAsString: String = objectMapper.writeValueAsString(customerDto)
@@ -123,6 +123,7 @@ class CustomerResourceTest {
     @Test
     fun `should find customer by id and return 200 status`() {
         //given
+        setup()
         val customer: me.dio.credit.application.system.entity.Customer = customerRepository.save(buildCustomerDto().toEntity())
         //when
         //then

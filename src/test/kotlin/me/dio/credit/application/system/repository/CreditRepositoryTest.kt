@@ -1,9 +1,6 @@
 package me.dio.credit.application.system.repository
 
-import me.dio.credit.application.system.entity.Address
-import me.dio.credit.application.system.entity.Credit
-import me.dio.credit.application.system.entity.Customer
-import me.dio.creditapplicationsystem.service.CustomerServiceTest
+import me.dio.credit.application.system.service.CustomerServiceTest
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

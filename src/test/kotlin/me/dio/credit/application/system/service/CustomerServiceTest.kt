@@ -7,18 +7,13 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
-import me.dio.credit.application.system.entity.Address
-import me.dio.credit.application.system.entity.Customer
-import me.dio.credit.application.system.exception.BusinessException
-import me.dio.creditapplicationsystem.repository.CustomerRepository
-import me.dio.creditapplicationsystem.service.impl.CustomerService
+import me.dio.credit.application.system.repository.CustomerRepository
+import me.dio.credit.application.system.service.impl.CustomerService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
-import java.util.Optional
-import java.util.Random
+import java.util.*
 
 //@ActiveProfiles("test")
 @ExtendWith(MockKExtension::class)
