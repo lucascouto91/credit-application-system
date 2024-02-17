@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class RestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handlerValidException(ex: MethodArgumentNotValidException): ResponseEntity<me.dio.credit.application.system.exception.ExceptionDetails> {
+    fun handlerValidException(ex: MethodArgumentNotValidException): ResponseEntity<ExceptionDetails> {
         val erros: MutableMap<String, String?> = HashMap()
         ex.bindingResult.allErrors.stream().forEach() { erro: ObjectError ->
             val fieldName: String = (erro as FieldError).field
@@ -22,7 +22,7 @@ class RestExceptionHandler {
             erros[fieldName] = messageError
         }
         return ResponseEntity(
-            me.dio.credit.application.system.exception.ExceptionDetails(
+            ExceptionDetails(
                 title = "Bad Request! Consult the documentation ",
                 timestamp = LocalDateTime.now(),
                 status = HttpStatus.BAD_REQUEST.value(),
@@ -33,10 +33,10 @@ class RestExceptionHandler {
     }
 
     @ExceptionHandler(DataAccessException::class)
-    fun handlerValidException(ex: DataAccessException): ResponseEntity<me.dio.credit.application.system.exception.ExceptionDetails> {
+    fun handlerValidException(ex: DataAccessException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(
-                me.dio.credit.application.system.exception.ExceptionDetails(
+                ExceptionDetails(
                     title = "Conflict! Consult the documentation ",
                     timestamp = LocalDateTime.now(),
                     status = HttpStatus.CONFLICT.value(),
@@ -55,11 +55,11 @@ class RestExceptionHandler {
         )*/
     }
 
-    @ExceptionHandler(me.dio.credit.application.system.exception.BusinessException::class)
-    fun handlerValidException(ex: me.dio.credit.application.system.exception.BusinessException): ResponseEntity<me.dio.credit.application.system.exception.ExceptionDetails> {
+    @ExceptionHandler(BusinessException::class)
+    fun handlerValidException(ex: BusinessException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                me.dio.credit.application.system.exception.ExceptionDetails(
+                ExceptionDetails(
                     title = "Bad Request! Consult the documentation ",
                     timestamp = LocalDateTime.now(),
                     status = HttpStatus.BAD_REQUEST.value(),
@@ -69,10 +69,10 @@ class RestExceptionHandler {
             )
     }
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handlerValidException(ex: IllegalArgumentException): ResponseEntity<me.dio.credit.application.system.exception.ExceptionDetails> {
+    fun handlerValidException(ex: IllegalArgumentException): ResponseEntity<ExceptionDetails> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                me.dio.credit.application.system.exception.ExceptionDetails(
+                ExceptionDetails(
                     title = "Bad Request! Consult the documentation ",
                     timestamp = LocalDateTime.now(),
                     status = HttpStatus.BAD_REQUEST.value(),

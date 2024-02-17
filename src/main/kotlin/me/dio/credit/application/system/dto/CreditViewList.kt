@@ -10,7 +10,7 @@ data class CreditViewList(
     val numberOfInstallments: Int,
     ) {
 
-    constructor(credit: me.dio.credit.application.system.entity.Credit) : this(
+    constructor(credit: Credit) : this(
         creditCode = credit.creditCode,
         creditValue = credit.creditValue,
         numberOfInstallments = credit.numberOfInstallments

@@ -2,7 +2,6 @@ package me.dio.credit.application.system.dto
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 import me.dio.credit.application.system.entity.Address
 import me.dio.credit.application.system.entity.Customer
@@ -22,14 +21,14 @@ data class CustomerDto(
     @field:NotBlank(message = "Invalid input") val street: String
 ) {
 
-    fun toEntity(): me.dio.credit.application.system.entity.Customer = me.dio.credit.application.system.entity.Customer(
+    fun toEntity(): Customer = Customer(
         firstName = this.firstName,
         lastName = this.lastName,
         cpf = this.cpf,
         income = this.income,
         email = this.email,
         password = this.password,
-        address = me.dio.credit.application.system.entity.Address(
+        address = Address(
             zipCode = this.zipCode,
             street = this.street
         )

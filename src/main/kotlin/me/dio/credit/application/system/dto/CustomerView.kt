@@ -13,7 +13,7 @@ data class CustomerView(
     val street: String,
     val id: Long?
 ) {
-    constructor(customer: me.dio.credit.application.system.entity.Customer): this (
+    constructor(customer: Customer): this (
         firstName = customer.firstName,
         lastName = customer.lastName,
         cpf = customer.cpf,

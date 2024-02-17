@@ -13,7 +13,7 @@ class Credit (
     @Column(nullable = false) val creditValue: BigDecimal = BigDecimal.ZERO,
     @Column(nullable = false) val dayFirstInstallment: LocalDate,
     @Column(nullable = false) val numberOfInstallments: Int = 0,
-    @Enumerated val status: me.dio.credit.application.system.enummeration.Status = me.dio.credit.application.system.enummeration.Status.IN_PROGRESS,
-    @ManyToOne var customer: me.dio.credit.application.system.entity.Customer? = null,
+    @Enumerated val status: Status = Status.IN_PROGRESS,
+    @ManyToOne var customer: Customer? = null,
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null
 )

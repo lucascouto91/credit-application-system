@@ -1,7 +1,6 @@
 package me.dio.credit.application.system.dto
 
 import jakarta.validation.constraints.Future
-import jakarta.validation.constraints.FutureOrPresent
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.NotNull
 import me.dio.credit.application.system.entity.Credit
@@ -17,11 +16,11 @@ data class CreditDto(
     @field:NotNull(message = "Invalid input") val customerId: Long
 ) {
 
-    fun toEntity(): me.dio.credit.application.system.entity.Credit = me.dio.credit.application.system.entity.Credit(
+    fun toEntity(): Credit = Credit(
         creditValue = this.creditValue,
         dayFirstInstallment = this.dayFirstOfInstallment,
         numberOfInstallments = this.numberOfInstallments,
-        customer = me.dio.credit.application.system.entity.Customer(id = this.customerId)
+        customer = Customer(id = this.customerId)
     )
 
 }

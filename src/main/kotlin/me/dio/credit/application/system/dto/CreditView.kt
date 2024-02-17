@@ -10,11 +10,11 @@ data class CreditView(
     val creditCode: UUID,
     val creditValue: BigDecimal,
     val numberOfInstallment: Int,
-    val status: me.dio.credit.application.system.enummeration.Status,
+    val status: Status,
     val emailCustomer: String?,
     val incomeCustomer: BigDecimal?
 ) {
-    constructor(credit: me.dio.credit.application.system.entity.Credit) : this(
+    constructor(credit: Credit) : this(
         creditCode = credit.creditCode,
         creditValue = credit.creditValue,
         numberOfInstallment = credit.numberOfInstallments,
