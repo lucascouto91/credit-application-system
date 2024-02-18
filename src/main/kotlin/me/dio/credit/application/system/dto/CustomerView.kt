@@ -1,6 +1,7 @@
 package me.dio.credit.application.system.dto
 
 import me.dio.credit.application.system.entity.Customer
+import me.dio.credit.application.system.enummeration.Roles
 import java.math.BigDecimal
 
 data class CustomerView(
@@ -11,7 +12,8 @@ data class CustomerView(
     val email: String,
     val zipCode: String,
     val street: String,
-    val id: Long?
+    val id: Long?,
+    val role: Set<Roles>
 ) {
     constructor(customer: Customer): this (
         firstName = customer.firstName,
@@ -21,7 +23,8 @@ data class CustomerView(
         email = customer.email,
         zipCode = customer.address.zipCode,
         street = customer.address.street,
-        id = customer.id
+        id = customer.id,
+        role = customer.roles
     )
 
 }

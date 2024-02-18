@@ -1,6 +1,7 @@
 package me.dio.credit.application.system.entity
 
 import jakarta.persistence.*
+import me.dio.credit.application.system.enummeration.Roles
 import java.math.BigDecimal
 
 @Entity
@@ -17,5 +18,14 @@ data class Customer(
         cascade = arrayOf(CascadeType.REMOVE, CascadeType.PERSIST),
         mappedBy = "customer")
     var credits: List<Credit> = mutableListOf(),
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Roles::class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "customer_roles", joinColumns = [JoinColumn(name = "customer_id")])
+    var roles: Set<Roles> = setOf()
+
+
+
 )
