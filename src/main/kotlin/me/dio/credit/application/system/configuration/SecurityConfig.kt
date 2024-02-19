@@ -2,6 +2,7 @@ package me.dio.credit.application.system.configuration
 
 import me.dio.credit.application.system.repository.CustomerRepository
 import me.dio.credit.application.system.security.AuthenticationFilter
+import me.dio.credit.application.system.security.JwtUtil
 import me.dio.credit.application.system.service.impl.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,7 +21,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 class SecurityConfig(
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val customerRepository: CustomerRepository,
-    private val userDetails: UserDetailsCustomService
+    private val userDetails: UserDetailsCustomService,
+    private val jwtUtil: JwtUtil
 ) {
 
     private val publicMatchers = arrayOf(
@@ -57,7 +59,7 @@ class SecurityConfig(
                     .requestMatchers(*publicMatchers.map { AntPathRequestMatcher(it) }.toTypedArray()).permitAll()
                     .anyRequest().authenticated()
             }
-            .addFilter(AuthenticationFilter(authenticationManager(), customerRepository))
+            .addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtil))
             .build()
     }
 
