@@ -1,5 +1,5 @@
 package me.dio.credit.application.system.enummeration
 
-enum class Status {
+enum class CreditStatus {
     IN_PROGRESS, APPROVED, REJECTED
 }

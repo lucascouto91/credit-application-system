@@ -1,6 +1,8 @@
 package me.dio.credit.application.system.entity
 
 import jakarta.persistence.*
+import me.dio.credit.application.system.enummeration.CreditStatus
+import me.dio.credit.application.system.enummeration.CustomerStatus
 import me.dio.credit.application.system.enummeration.Roles
 import java.math.BigDecimal
 
@@ -14,6 +16,7 @@ data class Customer(
     @Column(nullable = false) var income: BigDecimal = BigDecimal.ZERO,
     @Column(nullable = false) var password: String = "",
     @Column(nullable = false) @Embedded var address: Address = Address(),
+    @Enumerated val customerStatus: CustomerStatus = CustomerStatus.ATIVO,
     @Column(nullable = false) @OneToMany(fetch = FetchType.LAZY,
         cascade = [CascadeType.REMOVE, CascadeType.PERSIST],
         mappedBy = "customer")
