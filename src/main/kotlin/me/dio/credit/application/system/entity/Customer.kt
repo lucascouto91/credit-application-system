@@ -15,7 +15,7 @@ data class Customer(
     @Column(nullable = false) var password: String = "",
     @Column(nullable = false) @Embedded var address: Address = Address(),
     @Column(nullable = false) @OneToMany(fetch = FetchType.LAZY,
-        cascade = arrayOf(CascadeType.REMOVE, CascadeType.PERSIST),
+        cascade = [CascadeType.REMOVE, CascadeType.PERSIST],
         mappedBy = "customer")
     var credits: List<Credit> = mutableListOf(),
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null,
