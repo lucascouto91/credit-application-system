@@ -1,30 +1,48 @@
 package me.dio.credit.application.system.configuration
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.security.servlet.AntPathRequestMatcherProvider
+import me.dio.credit.application.system.repository.CustomerRepository
+import me.dio.credit.application.system.security.AuthenticationFilter
+import me.dio.credit.application.system.service.impl.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig() {
+class SecurityConfig(
+    private val authenticationConfiguration: AuthenticationConfiguration,
+    private val customerRepository: CustomerRepository,
+    private val userDetails: UserDetailsCustomService
+) {
 
-    private val publiPostMathers = arrayOf(
+    private val publicMatchers = arrayOf(
         "/api/customers",
-        "/h2-console/**"
+        "/h2-console/**",
+        "/swagger-ui.html",
+        "/v3/api-docs/**",
+        "/swagger-ui/**"
     )
 
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun authenticationManager(): AuthenticationManager {
+        return authenticationConfiguration.authenticationManager
+    }
+
+    fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(userDetails).passwordEncoder(bCryptPasswordEncoder())
     }
 
     @Bean
@@ -34,8 +52,15 @@ class SecurityConfig() {
             .csrf { it.disable() }
             .headers { headers -> headers.frameOptions { frame -> frame.sameOrigin() } }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .authorizeHttpRequests { requests ->
+                requests
+                    .requestMatchers(*publicMatchers.map { AntPathRequestMatcher(it) }.toTypedArray()).permitAll()
+                    .anyRequest().authenticated()
+            }
+            .addFilter(AuthenticationFilter(authenticationManager(), customerRepository))
             .build()
     }
+
 
 
 }
