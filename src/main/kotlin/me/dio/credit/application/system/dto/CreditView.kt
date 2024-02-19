@@ -10,7 +10,7 @@ data class CreditView(
     val creditCode: UUID,
     val creditValue: BigDecimal,
     val numberOfInstallment: Int,
-    val creditStatus: CreditStatus,
+    val status: CreditStatus,
     val emailCustomer: String?,
     val incomeCustomer: BigDecimal?
 ) {
@@ -18,7 +18,7 @@ data class CreditView(
         creditCode = credit.creditCode,
         creditValue = credit.creditValue,
         numberOfInstallment = credit.numberOfInstallments,
-        creditStatus = credit.creditStatus,
+        status = credit.status,
         emailCustomer = credit.customer?.email,
         incomeCustomer = credit.customer?.income
     )

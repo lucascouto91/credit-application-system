@@ -6,7 +6,7 @@ import me.dio.credit.application.system.enummeration.Roles
 import java.math.BigDecimal
 
 data class CustomerView(
-    val customerStatus: CustomerStatus,
+    val status: CustomerStatus,
     val firstName: String,
     val lastName: String,
     val cpf: String,
@@ -19,7 +19,7 @@ data class CustomerView(
     val role: Set<Roles>
 ) {
     constructor(customer: Customer): this (
-        customerStatus = customer.customerStatus,
+        status = customer.status,
         firstName = customer.firstName,
         lastName = customer.lastName,
         cpf = customer.cpf,
