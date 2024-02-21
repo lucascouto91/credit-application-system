@@ -2,6 +2,7 @@ package me.dio.credit.application.system.configuration
 
 import me.dio.credit.application.system.repository.CustomerRepository
 import me.dio.credit.application.system.security.AuthenticationFilter
+import me.dio.credit.application.system.security.AuthorizationFilter
 import me.dio.credit.application.system.security.JwtUtil
 import me.dio.credit.application.system.service.impl.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
@@ -60,6 +61,7 @@ class SecurityConfig(
                     .anyRequest().authenticated()
             }
             .addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtil))
+            .addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetails))
             .build()
     }
 
