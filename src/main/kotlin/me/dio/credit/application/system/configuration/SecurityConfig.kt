@@ -1,5 +1,6 @@
 package me.dio.credit.application.system.configuration
 
+import me.dio.credit.application.system.enummeration.Roles
 import me.dio.credit.application.system.repository.CustomerRepository
 import me.dio.credit.application.system.security.AuthenticationFilter
 import me.dio.credit.application.system.security.AuthorizationFilter
@@ -34,6 +35,10 @@ class SecurityConfig(
         "/swagger-ui/**"
     )
 
+    private val adminMatchers = arrayOf(
+        "/api/admin/**"
+    )
+
     @Bean
     fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder()
@@ -58,13 +63,14 @@ class SecurityConfig(
             .authorizeHttpRequests { requests ->
                 requests
                     .requestMatchers(*publicMatchers.map { AntPathRequestMatcher(it) }.toTypedArray()).permitAll()
+                    .requestMatchers(*adminMatchers.map { AntPathRequestMatcher(it) }.toTypedArray())
+                    .hasAuthority(Roles.ADMIN.description)
                     .anyRequest().authenticated()
             }
             .addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtil))
             .addFilter(AuthorizationFilter(authenticationManager(), jwtUtil, userDetails))
             .build()
     }
-
 
 
 }
