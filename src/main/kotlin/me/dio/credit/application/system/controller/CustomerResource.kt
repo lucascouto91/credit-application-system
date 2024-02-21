@@ -5,6 +5,7 @@ import me.dio.credit.application.system.dto.CustomerDto
 import me.dio.credit.application.system.dto.CustomerUpdateDto
 import me.dio.credit.application.system.dto.CustomerView
 import me.dio.credit.application.system.entity.Customer
+import me.dio.credit.application.system.security.UserCanOnlyAccessTheirOwnResource
 import me.dio.credit.application.system.service.impl.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -27,16 +28,19 @@ class CustomerResource(
     }
 
     @GetMapping("/{id}")
+    @UserCanOnlyAccessTheirOwnResource
     fun findById(@PathVariable id: Long): ResponseEntity<CustomerView> {
         val customer: Customer = this.customerService.findById(id)
         return ResponseEntity.status(HttpStatus.OK).body(CustomerView(customer))
     }
 
     @DeleteMapping("/{id}")
+    @UserCanOnlyAccessTheirOwnResource
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(@PathVariable id: Long) = this.customerService.delete(id)
 
     @PatchMapping
+    @UserCanOnlyAccessTheirOwnResource
     fun updateCustomer(
         @RequestParam(value = "customerId") id: Long,
         @RequestBody @Valid customerUpdateDto: CustomerUpdateDto

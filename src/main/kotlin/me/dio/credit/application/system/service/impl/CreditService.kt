@@ -1,6 +1,7 @@
 package me.dio.credit.application.system.service.impl
 
 import me.dio.credit.application.system.entity.Credit
+import me.dio.credit.application.system.exception.BusinessException
 import me.dio.credit.application.system.repository.CreditRepository
 import me.dio.credit.application.system.service.ICreditService
 import org.springframework.stereotype.Service
@@ -25,7 +26,7 @@ class CreditService(
 
     override fun findByCreditCode(customerId: Long, creditCode: UUID): Credit {
         val credit: Credit = (this.creditRepository.findByCreditCode(creditCode)
-            ?: throw me.dio.credit.application.system.exception.BusinessException("Creditcode $creditCode not found"))
+            ?: throw BusinessException("Creditcode $creditCode not found"))
         return if (credit.customer?.id == customerId) {
             credit
         } else {
@@ -34,6 +35,6 @@ class CreditService(
     }
     private fun validDayFirstInstallment(dayFirstInstallment: LocalDate): Boolean {
         return if (dayFirstInstallment.isBefore(LocalDate.now().plusMonths(3))) true
-        else throw me.dio.credit.application.system.exception.BusinessException("Invalid Date")
+        else throw BusinessException("Invalid Date")
     }
 }
