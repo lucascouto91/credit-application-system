@@ -8,6 +8,7 @@ import me.dio.credit.application.system.security.JwtUtil
 import me.dio.credit.application.system.service.impl.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -29,16 +30,12 @@ class SecurityConfig(
     private val jwtUtil: JwtUtil
 ) {
 
-    private val publicMatchers = arrayOf(
-        "/api/customers",
+
+    private val h2AndSwagger = arrayOf(
         "/h2-console/**",
         "/swagger-ui.html",
         "/v3/api-docs/**",
         "/swagger-ui/**"
-    )
-
-    private val adminMatchers = arrayOf(
-        "/api/admin/**"
     )
 
     @Bean
@@ -64,8 +61,9 @@ class SecurityConfig(
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { requests ->
                 requests
-                    .requestMatchers(*publicMatchers.map { AntPathRequestMatcher(it) }.toTypedArray()).permitAll()
-                    .requestMatchers(*adminMatchers.map { AntPathRequestMatcher(it) }.toTypedArray())
+                    .requestMatchers(*h2AndSwagger.map { AntPathRequestMatcher(it) }.toTypedArray()).permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/api/customers")).permitAll()
+                    .requestMatchers(AntPathRequestMatcher.antMatcher("/api/admin/**"))
                     .hasAuthority(Roles.ADMIN.description)
                     .anyRequest().authenticated()
             }

@@ -11,7 +11,6 @@ import java.time.LocalDate
 data class CreditDto(
     @field:NotNull(message = "Invalid input") val creditValue: BigDecimal,
     @field:Future val dayFirstOfInstallment: LocalDate,
-    //TODO: Colocar um limite na data futura.
     @field:Max(48, message = "value max 48") val numberOfInstallments: Int,
     @field:NotNull(message = "Invalid input") val customerId: Long
 ) {
