@@ -19,6 +19,9 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +38,8 @@ class SecurityConfig(
         "/h2-console/**",
         "/swagger-ui.html",
         "/v3/api-docs/**",
-        "/swagger-ui/**"
+        "/swagger-ui/**",
+        "/login"
     )
 
     @Bean
@@ -72,5 +76,16 @@ class SecurityConfig(
             .build()
     }
 
+    @Bean
+    fun corsConfig(): CorsFilter {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin("*")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
+    }
 
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/admin")
-class AdminResource() {
+class AdminResource {
 
     @GetMapping("/report")
     fun report(): String {

@@ -1,6 +1,6 @@
 package me.dio.credit.application.system.dto
 
-data class LoginRequest(
+data class LoginDto(
     val email: String,
     val password: String
 )
