@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import me.dio.credit.application.system.dto.LoginRequest
+import me.dio.credit.application.system.dto.LoginDto
 import me.dio.credit.application.system.exception.AuthenticationException
 import me.dio.credit.application.system.repository.CustomerRepository
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,9 +21,9 @@ class AuthenticationFilter(
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
 
         try {
-            val loginRequest = jacksonObjectMapper().readValue(request.inputStream, LoginRequest::class.java)
-            val id = customerRepository.findByEmail(loginRequest.email)?.id
-            val authToken = UsernamePasswordAuthenticationToken(id, loginRequest.password)
+            val loginDto = jacksonObjectMapper().readValue(request.inputStream, LoginDto::class.java)
+            val id = customerRepository.findByEmail(loginDto.email)?.id
+            val authToken = UsernamePasswordAuthenticationToken(id, loginDto.password)
             return authenticationManager.authenticate(authToken)
 
         } catch (ex: Exception) {
