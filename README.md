@@ -53,10 +53,15 @@ docker pull lucascouto91/credit-application-system:1.0.0
 docker run -p 8080:8080 d7290ab212ba
 ```
 3. O servidor será iniciado e você poderá acessar as API através `http://localhost:8080/`.
-4. O H2 database está disponível em `http://localhost:8080/h2-console`
+4. O H2 database está disponível em `http://localhost:8080/h2-console`.
+   - Conferir os seguintes campos:
+      - Driver Class: `org.h2.Driver`
+      - JDBC URL: `jdbc:h2:mem:credit_application_system_db`
+      - User Name: `cami`
+      - Não tem senha.
 
 
-- <h3 id="IDE">Executando com IDE</h3>
+- <h3 id="ide">Executando com IDE</h3>
 
 1. Certifique-se de ter o JDK 11 ou superior instalado em seu sistema.
 2. Clone este repositório em seu ambiente local.
@@ -67,6 +72,11 @@ git clone https://github.com/lucascouto91/credit-application-system
 4. Execute a classe principal `CreditApplicationSystemApplication.kt`.
 5. O servidor será iniciado e você poderá acessar as API através `http://localhost:8080/`.
 6. O H2 database está disponível em `http://localhost:8080/h2-console` login:cami, não tem senha.
+   - Conferir os seguintes campos:
+      - Driver Class: `org.h2.Driver`
+      - JDBC URL: `jdbc:h2:mem:credit_application_system_db`
+      - User Name: `cami`
+      - Não tem senha.
 
 <h2 id="documentacao">Documentação da API</h2>
 
