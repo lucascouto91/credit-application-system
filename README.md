@@ -42,6 +42,7 @@
 - Concessão de Crédito: Funcionalidade exclusiva para administradores, que podem conceder crédito aos usuários.
 
 <h2 id="executar">Como Executar o Projeto</h2>
+
 - <h3 id="docker">Executando com Docker</h3>
 1. Baixe a imagem do projeto.
 ```bash
@@ -55,7 +56,7 @@ docker run -p 8080:8080 d7290ab212ba
 4. O H2 database está disponível em `http://localhost:8080/h2-console`
 
 
-- <h3 id="docker">Executando com IDE</h3>
+- <h3 id="IDE">Executando com IDE</h3>
 
 1. Certifique-se de ter o JDK 11 ou superior instalado em seu sistema.
 2. Clone este repositório em seu ambiente local.
