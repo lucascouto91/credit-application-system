@@ -7,11 +7,16 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
+import me.dio.credit.application.system.entity.Address
+import me.dio.credit.application.system.entity.Customer
+import me.dio.credit.application.system.enummeration.CustomerStatus
+import me.dio.credit.application.system.enummeration.Roles
 import me.dio.credit.application.system.repository.CustomerRepository
 import me.dio.credit.application.system.service.impl.CustomerService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.math.BigDecimal
 import java.util.*
 
@@ -20,6 +25,8 @@ import java.util.*
 class CustomerServiceTest {
     @MockK
     lateinit var customerRepository: CustomerRepository
+    @MockK
+    lateinit var bCrypt: BCryptPasswordEncoder
 
     @InjectMockKs
     lateinit var customerService: CustomerService
@@ -27,14 +34,20 @@ class CustomerServiceTest {
     @Test
     fun `should create customer`() {
         //given
-        val fakeCustomer: me.dio.credit.application.system.entity.Customer = buildCustomer()
+        val initialPassword = Math.random().toString()
+        val fakeCustomer: Customer = buildCustomer(password = initialPassword)
+        val fakePassword = UUID.randomUUID().toString()
+        val fakeCustomerEncrypted = fakeCustomer.copy(password = fakePassword)
+
         every { customerRepository.save(any()) } returns fakeCustomer
+        every { bCrypt.encode(initialPassword) } returns fakePassword
         //when
-        val actual: me.dio.credit.application.system.entity.Customer = customerService.save(fakeCustomer)
+        val actual: Customer = customerService.save(fakeCustomer)
         //then
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
-        verify(exactly = 1) { customerRepository.save(fakeCustomer) }
+        verify(exactly = 1) { customerRepository.save(fakeCustomerEncrypted) }
+        verify(exactly = 1) { bCrypt.encode(initialPassword)}
 
     }
 
@@ -42,12 +55,12 @@ class CustomerServiceTest {
     fun `should find customer by id`() {
         //given
         val fakeId: Long = Random().nextLong()
-        val fakeCustomer: me.dio.credit.application.system.entity.Customer = buildCustomer(id = fakeId)
+        val fakeCustomer: Customer = buildCustomer(id = fakeId)
         every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
         //when
-        val actual: me.dio.credit.application.system.entity.Customer = customerService.findById(fakeId)
+        val actual: Customer = customerService.findById(fakeId)
         //then
-        Assertions.assertThat(actual).isExactlyInstanceOf(me.dio.credit.application.system.entity.Customer::class.java)
+        Assertions.assertThat(actual).isExactlyInstanceOf(Customer::class.java)
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
         verify(exactly = 1) { customerRepository.findById(fakeId) }
@@ -72,7 +85,7 @@ class CustomerServiceTest {
     fun `should delete customer by id`() {
         //given
         val fakeId: Long = Random().nextLong()
-        val fakeCustomer: me.dio.credit.application.system.entity.Customer = buildCustomer(id = fakeId)
+        val fakeCustomer: Customer = buildCustomer(id = fakeId)
         every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
         every { customerRepository.delete(fakeCustomer) } just runs
         //when
@@ -93,17 +106,19 @@ class CustomerServiceTest {
             street: String = "Rua da Cami",
             income: BigDecimal = BigDecimal.valueOf(1000.0),
             id: Long = 1L
-        ) = me.dio.credit.application.system.entity.Customer(
+        ) = Customer(
             firstName = firstName,
             lastName = lastName,
             cpf = cpf,
             email = email,
             password = password,
-            address = me.dio.credit.application.system.entity.Address(
+            address = Address(
                 zipCode = zipCode,
                 street = street,
             ),
+            status = CustomerStatus.ATIVO,
             income = income,
+            roles = setOf(Roles.CUSTOMER),
             id = id
         )
     }

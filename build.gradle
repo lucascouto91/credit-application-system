@@ -32,6 +32,8 @@ dependencies {
 	testImplementation 'io.mockk:mockk:1.13.4'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation "io.jsonwebtoken:jjwt:0.12.5"
+	testImplementation "org.springframework.security:spring-security-test:6.2.2"
+
 }
 
 tasks.withType(KotlinCompile).configureEach {
